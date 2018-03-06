@@ -1,6 +1,8 @@
 # Ravel
 Ah shit here we go
 
+[Google Drive](https://drive.google.com/drive/folders/1er3U4pc3P32d_06xr0KryOA7qMG6vsjM?usp=sharing)
+
 
 ## Naming Conventions
 ### Tech
@@ -16,7 +18,21 @@ Unity Version - 2018
 Those of you who are dealing with modeling, please add to this. 
 
 ---
-#Credits
+## Roadmap
+Here is a summary of the repo setup
+
+~~~
+| README.md // This file
+| Ravel (Unity Project) // The unity project we're building
+    |Assets
+        | Scripts   
+        | Models
+    | ...
+| Reference
+~~~
+
+---
+## Credits
 
 **Please note things we should credit here** 
 
