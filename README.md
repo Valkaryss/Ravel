@@ -58,7 +58,10 @@ To create a local copy of the github repo on your computer:
     * If there were any collisions, then after fixing:
         * `git add [files]`
         * `git commit`
-* `git push origin <my name>`
+* The first time you push:
+    *   `git push origin HEAD:<your name>`
+* Every other time:
+    *      `git push`
 
 #### Integrate to Master
 * create a [pull request] (https://github.com/Fireheart182/Ravel/pulls)
