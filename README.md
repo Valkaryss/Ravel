@@ -17,6 +17,7 @@ Those of you who are dealing with modeling, please add to this.
 
 ---
 #Credits
+
 **Please note things we should credit here** 
 
 * Greer - Hannah Cornish
@@ -27,7 +28,7 @@ Those of you who are dealing with modeling, please add to this.
 
 ## Workflow Overview
 We all work on our own branches.
-When you have a thing you want to include in the project, load it into the global version of your branch, and then create a [pull request] (https://github.com/Fireheart182/Ravel/pulls) (PR) with **master** as the base and **\<your name\>** as the compare. 
+When you have a thing you want to include in the project, load it into the global version of your branch, and then create a [pull request](https://github.com/Fireheart182/Ravel/pulls) (PR) with **master** as the base and **\<your name\>** as the compare. 
 I've protected the **master** branch, which means that you can't make changes directly to **master** and instead have to create a PR. Hopefully, that'll protect the whole project from a mistake in using git.
 
 On your own local branch, you do work as you normally would, treating the github repo like you would any folder on your computer. As you work, you make commits, which act like steps in production. I recommend making individual commits for each step of your work, as that will make recovery easier if things go wrong.
@@ -44,7 +45,7 @@ To create a local copy of the github repo on your computer:
 * If you want to see a list of all the branches, you can run `git branch -a`. I've protected the **master** branch, so if you do work there, you're going to have a bad time. You should see a little astrisk next to your name, to indicate you are currently working on that branch.
 
 ## Working
-####Starting a new thing
+#### Starting a new thing
 * verify you're on your local branch with `git branch`
 * `git pull origin master` to pull down anything else that has been changed since you last did work
 
@@ -62,4 +63,4 @@ To create a local copy of the github repo on your computer:
 * `git push`
 
 #### Integrate to Master
-* create a [pull request] (https://github.com/Fireheart182/Ravel/pulls)
+* create a [pull request](https://github.com/Fireheart182/Ravel/pulls)
