@@ -19,7 +19,7 @@ Those of you who are dealing with modeling, please add to this.
 
 ---
 ## Roadmap
-Here is a summary of the repo setup
+Here is a summary of the repo setup so far
 
 ~~~
 | README.md // This file
@@ -29,6 +29,7 @@ Here is a summary of the repo setup
         | Models
     | ...
 | Reference
+    | Programatic Geometry
 ~~~
 
 ---
