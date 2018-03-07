@@ -30,6 +30,8 @@ Here is a summary of the repo setup so far
     | ...
 | Reference
     | Programatic Geometry
+| Animatic // Files for use in the animatic
+    | ...
 ~~~
 
 ---
