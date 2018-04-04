@@ -15,7 +15,8 @@ Variables - camelCase
 Unity Version - 2018
 
 ### Modeling
-Those of you who are dealing with modeling, please add to this. 
+For props for the crit on 4/9:
+Make a folder with just the name of the room. Put all of the objs of the props you make for that room in the folder, named Room_Object_Initials. So, if I'm making the bed in the bedroom, I'll first make a folder called "BEDROOM", and I'll title the obj of the bed "Bedroom_Bed_KT". Once you're done with the folder for the room, put it in the Props folder on the Google Drive. 
 
 ---
 ## Roadmap
@@ -83,3 +84,4 @@ To create a local copy of the github repo on your computer:
 
 #### Integrate to Master
 * create a [pull request](https://github.com/Fireheart182/Ravel/pulls)
+
