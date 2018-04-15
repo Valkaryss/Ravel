@@ -48,7 +48,6 @@ public class RyanNonLinear : MonoBehaviour {
         leftTargets = new RenderTexture[leftLackeyNum];
         leftLackeys = new Camera[leftLackeyNum];
 
-        int bWidth = barSize;
         int rWidth = blendSize;
 
         // Initialize the right side cameras and rendertextures. 
@@ -74,13 +73,13 @@ public class RyanNonLinear : MonoBehaviour {
             leftLackeys[i].depth = i + rightLackeyNum;
             leftLackeys[i].transform.SetParent(transform);
         }
-
+        Debug.Log("Init complete");
 	}
-	
 
-    // Get a mask for the right side of the screen, with the ramp on the
-    // left side.
-    Texture2D getRightMask(int start, int rampWidth){
+
+  // Get a mask for the right side of the screen, with the ramp on the
+  // left side.
+  Texture2D getRightMask(int start, int rampWidth){
         Color[] maskVal = new Color[height * width];
 
         for (int i = 0; i < height; i ++){
@@ -154,20 +153,19 @@ public class RyanNonLinear : MonoBehaviour {
             blending.SetTexture("_BaseTex", src);
             blending.SetTexture("_MaskTex", rightMasks[i]);
             blending.SetTexture("_ApplyTex", rightTargets[i]);
-            Graphics.Blit(src, mixer, blending);
-            src = mixer;
+            Graphics.Blit(mixer, src, blending);
         }
-
+        mixer = new RenderTexture(width, height, 24);
         // Mix all of the left-side cameras. 
-        for (int i = 0; i < leftLackeyNum; i ++){
-            blending.SetTexture("_BaseTex", src);
-            blending.SetTexture("_MaskTex", leftMasks[i]);
-            blending.SetTexture("_ApplyTex", leftTargets[i]);
-            Graphics.Blit(src, mixer, blending);
-            src = mixer;
+        for (int i = 0; i < leftLackeyNum; i++)
+        {
+          blending.SetTexture("_BaseTex", src);
+          blending.SetTexture("_MaskTex", leftMasks[i]);
+          blending.SetTexture("_ApplyTex", leftTargets[i]);
+          Graphics.Blit(mixer, src, blending);
         }
 
-        // Send all the stuff I just built up onto the screen.
-        Graphics.Blit(mixer, dest);
-    }
+    // Send all the stuff I just built up onto the screen.
+    Graphics.Blit(src, dest);
+  }
 }

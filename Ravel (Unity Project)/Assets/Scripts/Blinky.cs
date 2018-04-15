@@ -39,7 +39,6 @@ public class Blinky : MonoBehaviour {
     // then they're meant to turn on and off in unison.
 	void Start () {
         mesh = GetComponent<MeshFilter>().mesh;
-        Debug.Log("Submeshes: " + mesh.subMeshCount);
 
         turnAllLightsOff(mesh);
         // Debug.Break();
