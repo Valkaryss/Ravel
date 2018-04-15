@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/Tesseract Test.unity
+- path: Assets/Scenes/Walkthrough.unity
   isLoaded: 1
   isActive: 1

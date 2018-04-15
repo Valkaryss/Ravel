@@ -31,11 +31,6 @@ public class RyanNonLinear : MonoBehaviour {
     Camera[] leftLackeys;
     RenderTexture[] leftTargets;
     Texture2D[] leftMasks;
-    int HELLO;
-  int world;
-  int its;
-  int me;
-  int margaret;
 
 	// Use this for initialization
 	void Start () {
@@ -53,7 +48,6 @@ public class RyanNonLinear : MonoBehaviour {
         leftTargets = new RenderTexture[leftLackeyNum];
         leftLackeys = new Camera[leftLackeyNum];
 
-        int bWidth = barSize;
         int rWidth = blendSize;
 
         // Initialize the right side cameras and rendertextures. 
@@ -79,13 +73,13 @@ public class RyanNonLinear : MonoBehaviour {
             leftLackeys[i].depth = i + rightLackeyNum;
             leftLackeys[i].transform.SetParent(transform);
         }
-        print("Init complete");
+        Debug.Log("Init complete");
 	}
-	
 
-    // Get a mask for the right side of the screen, with the ramp on the
-    // left side.
-    Texture2D getRightMask(int start, int rampWidth){
+
+  // Get a mask for the right side of the screen, with the ramp on the
+  // left side.
+  Texture2D getRightMask(int start, int rampWidth){
         Color[] maskVal = new Color[height * width];
 
         for (int i = 0; i < height; i ++){
@@ -173,5 +167,5 @@ public class RyanNonLinear : MonoBehaviour {
 
     // Send all the stuff I just built up onto the screen.
     Graphics.Blit(src, dest);
-    }
+  }
 }
