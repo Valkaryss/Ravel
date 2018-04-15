@@ -31,6 +31,11 @@ public class RyanNonLinear : MonoBehaviour {
     Camera[] leftLackeys;
     RenderTexture[] leftTargets;
     Texture2D[] leftMasks;
+    int HELLO;
+  int world;
+  int its;
+  int me;
+  int margaret;
 
 	// Use this for initialization
 	void Start () {
@@ -74,7 +79,7 @@ public class RyanNonLinear : MonoBehaviour {
             leftLackeys[i].depth = i + rightLackeyNum;
             leftLackeys[i].transform.SetParent(transform);
         }
-
+        print("Init complete");
 	}
 	
 
@@ -154,20 +159,19 @@ public class RyanNonLinear : MonoBehaviour {
             blending.SetTexture("_BaseTex", src);
             blending.SetTexture("_MaskTex", rightMasks[i]);
             blending.SetTexture("_ApplyTex", rightTargets[i]);
-            Graphics.Blit(src, mixer, blending);
-            src = mixer;
+            Graphics.Blit(mixer, src, blending);
         }
-
+        mixer = new RenderTexture(width, height, 24);
         // Mix all of the left-side cameras. 
-        for (int i = 0; i < leftLackeyNum; i ++){
-            blending.SetTexture("_BaseTex", src);
-            blending.SetTexture("_MaskTex", leftMasks[i]);
-            blending.SetTexture("_ApplyTex", leftTargets[i]);
-            Graphics.Blit(src, mixer, blending);
-            src = mixer;
+        for (int i = 0; i < leftLackeyNum; i++)
+        {
+          blending.SetTexture("_BaseTex", src);
+          blending.SetTexture("_MaskTex", leftMasks[i]);
+          blending.SetTexture("_ApplyTex", leftTargets[i]);
+          Graphics.Blit(mixer, src, blending);
         }
 
-        // Send all the stuff I just built up onto the screen.
-        Graphics.Blit(mixer, dest);
+    // Send all the stuff I just built up onto the screen.
+    Graphics.Blit(src, dest);
     }
 }
