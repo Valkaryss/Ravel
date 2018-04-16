@@ -14,6 +14,12 @@ public class Runner : MonoBehaviour {
   public GameObject letterLocation;
   Vector3 letterLoc;
 
+  public GameObject roofTarget;
+  Vector3 roofLocation;
+
+  public GameObject bedroomTarget;
+  Vector3 bedroomLocation;
+
 
   enum State { start, searching };
   State state;
@@ -25,12 +31,19 @@ public class Runner : MonoBehaviour {
 
   // Use this for initialization
   void Start() {
-    state = State.start;
     restartPosition = transform.position;
     stairPosition = startTargetPosition.transform.position;
     letterLoc = letterLocation.transform.position;
-    pc.GravityModifier = 0;
+    roofLocation = roofTarget.transform.position;
+    bedroomLocation = bedroomTarget.transform.position;
     locationTracker = new Hashtable();
+    restart();
+  }
+
+  void restart()
+  {
+    state = State.start;
+    pc.GravityModifier = 0;
     locationTracker["Bedroom"] = false;
     locationTracker["Kitchen"] = false;
     locationTracker["Basement"] = false;
@@ -42,7 +55,7 @@ public class Runner : MonoBehaviour {
   void disableBedroom2()
   {
     bedroom2Location = bedroomCollider2.transform.position;
-    bedroomCollider2.transform.position = new Vector3(999999, 9999999, 999999);
+    bedroomCollider2.transform.position = new Vector3(0, 0, 0);
   }
 
   // Move the bedroom2 collider back to a useful place
@@ -130,7 +143,7 @@ public class Runner : MonoBehaviour {
     // Are we there yet?
     if (almostEquals(transform.position, restartPosition))
     {
-      Start();
+      restart();
     }
   }
 
@@ -158,27 +171,66 @@ public class Runner : MonoBehaviour {
   //    break;
   private void OnTriggerEnter(Collider other)
   {
+    if (other.transform.parent.name != "Trigger Elements") { return; }
     Vector3 p = other.transform.position;
     switch (other.name)
     {
-      case ("Test"):
-        drawText(p, "Testing testing 123", 0, 5);
-        break;
       case ("Bedroom1"):
-
+        drawText(p, "You look around, and pick up some objects. \nSome of them have pieces of the private key.", 0, 15);
         markVisited("Bedroom");
         break;
+      case ("Bedroom2"):
+        drawText(p, "You walk in and Greer is on the bed. \nShe walks up to you, and she takes you to the roof", 0, 10);
+        StartCoroutine(roofTeleport());
+        break;
+      case ("Kitchen"):
+        drawText(p, "The kitchen is covered in cupcakes. \nYou open a microwave, where you find a pile of electronics. \nThere's a note on the refrigerator. \nYou pick up a cupcake, the words change to numbers, and you get a piece of the private key.", 0, 15);
+        markVisited("Kitchen");
+        break;
+      case ("Basement"):
+        drawText(p, "You see Greer perched on a pile of boxes on her laptop. \nThere's another laptop on the server monitor that gives you a piece of the private key.", 0, 15);
+        markVisited("Basement");
+        break;
+      case ("Bathroom"):
+        drawText(p, "You walk in and see the words \"I love you\" written in the condesation on the mirror. \nYou pick up a digital clock and the numbers change, giving you  piece of the private key.", 0, 15);
+        markVisited("Bathroom");
+        break;
+      case ("Roof"):
+        drawText(p, "You arrive standing next to Greer. \nShe interacts with you, as you look out over the void. \nIt's sweet and romantic. \nShe walks to the ladder and dissapears.", 5, 15);
+        break;
+      case ("Ladder"):
+        drawText(p, "You walk down the ladder and it curves into the bedroom.\n Standby for teleport", 0, 5);
+        StartCoroutine(bedroomTeleport());
+        break;
+      case ("Foyer"):
+        drawText(p, "Greer crosses the room, walking through her door.\n She catches your eye, but ultimately ignores you.", 0, 10);
+        break;
+      case ("Greer's Door"):
+        drawText(p, "The way is shut. \nYou hear Greer speaking to a superior on the opposite side of the door.", 0, 5);
+        break;
+
       default:
-        drawText(p, "DEFAULTY TEXT", 0,-1);
+        print("Unexected trigger element " + other.name + "!!");
         break;
     }
-    Destroy(other.gameObject);
+    other.gameObject.transform.position = new Vector3(0,0,0);
+  }
+
+  IEnumerator bedroomTeleport()
+  {
+    yield return new WaitForSeconds(5f);
+    transform.position = bedroomLocation;
+  }
+  IEnumerator roofTeleport()
+  {
+    yield return new WaitForSeconds(10f);
+    transform.position = roofLocation;
   }
 
   // Tell the location tracker that we've been to this room, with snarky data verification.
   void markVisited(string roomName)
   {
-    if (!locationTracker.ContainsKey(roomName)){ print("You fucked up. Write better code."); Debug.Break();}
+    if (!locationTracker.ContainsKey(roomName)){ print("You fucked up. Write better code."); Debug.Break();return;}
     locationTracker[roomName] = true;
   }
 
@@ -204,6 +256,7 @@ public class Runner : MonoBehaviour {
     textMesh.text = t;
     textMesh.characterSize = 5f;
     textMesh.anchor = TextAnchor.MiddleCenter;
+    textMesh.alignment = TextAlignment.Center;
 
     if (life > 0){ yield return new WaitForSeconds(life);}
     else{ yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.R));}
