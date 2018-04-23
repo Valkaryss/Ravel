@@ -474,7 +474,12 @@ ModelImporter:
     7400000: Take 001
     9500000: //RootNode
     13700000: head_export:polySurface1
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: head_export_lambert2SG1
+    second: {fileID: 2100000, guid: 994da0c4178ef2540a642341dc835175, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

@@ -1,6 +1,6 @@
 WindowsStandalone
 PlayerPath?
-D:/Ravel-master/TestBuild.exe
+D:/Unity/Projects/Ravel/Ravel (Unity Project)/TestBuild.exe
 SceneListBegin?
 Assets/Scenes/Walkthrough.unity
 SceneListEnd?
@@ -275,7 +275,7 @@ f9d5d2d91a9544224fb21cddd66539de Assembly-CSharp.dll:.OVRLint
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.OvrAvatarHand
 558ebdd5c791d30ce7c6bd84adf7245b Assembly-CSharp.dll:.PlayerController
 85945c52833a42f4c8ccdc8b47380cb2 Assembly-CSharp.dll:Oculus.Platform.CallbackRunner
-2bdd507f4a7c2b144a192d03e80a5d6f Assembly-CSharp.dll:.Runner
+3685f22911312d593b9b6409241b68a3 Assembly-CSharp.dll:.Runner
 26215f135eeb48d8fa1189498c107f6c Vuforia.UnityExtensions.dll:Vuforia.AnchorBehaviour
 0561521e336e270e6e5a9c61387cb838 Vuforia.UnityExtensions.dll:Vuforia.AnchorInputListenerBehaviour
 2e0fd93f459db951da0e2e94e2e33fb7 Vuforia.UnityExtensions.dll:Vuforia.AnchorStageBehaviour

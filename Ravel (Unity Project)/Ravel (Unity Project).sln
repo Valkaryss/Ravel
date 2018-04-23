@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ravel (Unity Project)", "Ravel (Unity Project).csproj", "{9FE10563-0669-026D-3C6D-E3944D7F73B4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ravel (Unity Project).Plugins", "Ravel (Unity Project).Plugins.csproj", "{3AC34515-D37D-69C7-F22C-B05F03675DB6}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ravel (Unity Project).Editor", "Ravel (Unity Project).Editor.csproj", "{EFF01602-7604-73A2-8B60-B71A80E58AD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ravel (Unity Project).Editor.Plugins", "Ravel (Unity Project).Editor.Plugins.csproj", "{2ABA8B79-352D-CFEF-7A6D-F19F48242706}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.PackageManagerUI.Editor", "Unity.PackageManagerUI.Editor.csproj", "{6877705C-FBD9-0C4F-5AFB-6FB431E5D39D}"
 EndProject
@@ -17,10 +21,18 @@ Global
 		{9FE10563-0669-026D-3C6D-E3944D7F73B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FE10563-0669-026D-3C6D-E3944D7F73B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FE10563-0669-026D-3C6D-E3944D7F73B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AC34515-D37D-69C7-F22C-B05F03675DB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AC34515-D37D-69C7-F22C-B05F03675DB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AC34515-D37D-69C7-F22C-B05F03675DB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AC34515-D37D-69C7-F22C-B05F03675DB6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EFF01602-7604-73A2-8B60-B71A80E58AD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EFF01602-7604-73A2-8B60-B71A80E58AD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFF01602-7604-73A2-8B60-B71A80E58AD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFF01602-7604-73A2-8B60-B71A80E58AD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ABA8B79-352D-CFEF-7A6D-F19F48242706}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ABA8B79-352D-CFEF-7A6D-F19F48242706}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ABA8B79-352D-CFEF-7A6D-F19F48242706}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ABA8B79-352D-CFEF-7A6D-F19F48242706}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6877705C-FBD9-0C4F-5AFB-6FB431E5D39D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6877705C-FBD9-0C4F-5AFB-6FB431E5D39D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6877705C-FBD9-0C4F-5AFB-6FB431E5D39D}.Release|Any CPU.ActiveCfg = Release|Any CPU
