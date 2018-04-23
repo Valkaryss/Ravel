@@ -29,6 +29,11 @@ public class Runner : MonoBehaviour {
 
   Hashtable locationTracker;
 
+
+  public AudioSource greersRoomAudio;
+  public AudioSource bathroomAudio;
+  public AudioSource basementAudio;
+
   // Use this for initialization
   void Start() {
     restartPosition = transform.position;
@@ -189,11 +194,13 @@ public class Runner : MonoBehaviour {
         break;
       case ("Basement"):
         drawText(p, "You see Greer perched on a pile of boxes on her laptop. \nThere's another laptop on the server monitor that gives you a piece of the private key.", 0, 15);
+        basementAudio.Play();
         markVisited("Basement");
         break;
       case ("Bathroom"):
         drawText(p, "You walk in and see the words \"I love you\" written in the condesation on the mirror. \nYou pick up a digital clock and the numbers change, giving you  piece of the private key.", 0, 15);
         markVisited("Bathroom");
+        bathroomAudio.Play();
         break;
       case ("Roof"):
         drawText(p, "You arrive standing next to Greer. \nShe interacts with you, as you look out over the void. \nIt's sweet and romantic. \nShe walks to the ladder and dissapears.", 5, 15);
@@ -207,6 +214,7 @@ public class Runner : MonoBehaviour {
         break;
       case ("Greer's Door"):
         drawText(p, "The way is shut. \nYou hear Greer speaking to a superior on the opposite side of the door.", 0, 5);
+        greersRoomAudio.Play();
         break;
 
       default:
