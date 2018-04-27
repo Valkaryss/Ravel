@@ -51,6 +51,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\DissolveEffect\dissolveController.cs" />
+     <Compile Include="Assets\DissolveEffect\SampleScene\CameraOrbit.cs" />
+     <Compile Include="Assets\DissolveEffect\SampleScene\FireOnEthan.cs" />
      <Compile Include="Assets\OculusPlatform\Scripts\AchievementType.cs" />
      <Compile Include="Assets\OculusPlatform\Scripts\AndroidPlatform.cs" />
      <Compile Include="Assets\OculusPlatform\Scripts\ApplicationOptions.cs" />
@@ -308,6 +311,7 @@
      <None Include="Assets\PostProcessing\Utilities\CustomMotionTexture\Shaders\CustomMotionVectorTexture.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\ACES.cginc" />
      <None Include="Assets\PostProcessing\Resources\Shaders\UberSecondPass.cginc" />
+     <None Include="Assets\DissolveEffect\Resources\Shader\CustomDissolve.shader" />
      <None Include="Assets\OVRAvatarSDK\Samples\Dependencies\SDL2\BUGS.txt" />
      <None Include="Assets\PostProcessing\Resources\Shaders\Tonemapping.cginc" />
      <None Include="Assets\OVR\Shaders\OVRColorRampAlpha.shader" />
