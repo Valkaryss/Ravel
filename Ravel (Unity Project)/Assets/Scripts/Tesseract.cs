@@ -57,15 +57,17 @@ public class Tesseract : MonoBehaviour {
     float rpsX;
     public float rotationsPerSecondW = .25f;
     float rpsW;
-
+   
     public float scaleX = 1;
     public float scaleY = 1;
     public float scaleZ = 1;
 
     GameObject[] objs;
     Matrix points;
-    int[][] edges;
+    int[] faces;
     int objMax = 100;
+    public MeshFilter meshFilter;
+    private Mesh mesh;
 
     public float lx = 5f;
     public float ly = 5f;
@@ -73,9 +75,10 @@ public class Tesseract : MonoBehaviour {
 
 
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         objs = new GameObject[objMax];
+        mesh = meshFilter.mesh;
 
 
         points = new Matrix(4,16);
@@ -88,35 +91,22 @@ public class Tesseract : MonoBehaviour {
 
         points.Scale(scaleX, scaleY, scaleZ, 1);
 
-        edges = new int[][]{
-            new int[]{0,1}, new int[]{1,2},
-            new int[]{2,3}, new int[]{3,0},
-            new int[]{4,5}, new int[]{5,6},
-            new int[]{6,7}, new int[]{7,4},
-            new int[]{8,9}, new int[]{9,10},
-            new int[]{10,11}, new int[]{11,8},
-            new int[]{12,13}, new int[]{13,14},
-            new int[]{14,15}, new int[]{15,12},
+        // Trust me
+        faces = new int[] {8,0,9,0,1,9,9,1,2,2,10,9,2,3,11,11,10,2,8,11,0,0,11,3,
+                           0,4,5,5,1,0,2,1,5,5,6,2,0,3,4,4,3,7,7,3,6,6,3,2,4,7,15,
+                           15,12,4,11,15,14,14,10,11,12,15,11,11,8,12,8,9,12,9,13,12,
+                           9,10,14,14,13,9,14,6,5,5,13,14,14,15,7,7,6,14,13,5,12,12,5,4};
+        mesh.triangles = faces;
+        mesh.MarkDynamic();
+    }
 
-            new int[]{0,4}, new int[]{1,5},
-            new int[]{2,6}, new int[]{3,7},
-            new int[]{8,12}, new int[]{9,13},
-            new int[]{10,14}, new int[]{11,15},
-
-            new int[]{0,8}, new int[]{1,9},
-            new int[]{2,10}, new int[]{3,11},
-            new int[]{4,12}, new int[]{5,13},
-            new int[]{6,14}, new int[]{7,15}
-                };
-	}
-
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update () {
         clear();
         rpsX = rotationsPerSecondX;
         rpsW = rotationsPerSecondW;
         tesseract();
-	}
+    }
 
 
     // Convert radians to degrees
@@ -124,58 +114,11 @@ public class Tesseract : MonoBehaviour {
         return rad * (180.0f / (float)Math.PI);
     }
 
-    // Draw a single edge from the first point to the
-    // second point. This is approximated as a cube in
-    // space, rotated and resized.
-    GameObject drawEdge(float x0, float y0, float z0, 
-                        float x1, float y1, float z1) {
-        // For testing
-        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        GameObject pivot = new GameObject();
-        pivot.transform.SetParent(transform);
-        pivot.transform.localPosition = new Vector3(x0,y0,z0);
-        cube.transform.SetParent(pivot.transform);
-
-        float dist = (float)  Math.Pow(Math.Pow((x0 - x1),2) + 
-                              Math.Pow((y0 - y1),2) + 
-                              Math.Pow((z0 - z1),2), 0.5);
-
-        cube.transform.localScale = new Vector3 (dist, edgeSize, edgeSize);
-        cube.transform.localPosition = new Vector3 (dist/2,0,0);
-
-        float h1 = (float) Math.Pow(Math.Pow((x0-x1),2)+Math.Pow((z0-z1),2), 0.5f);
-        float a1 = (x0-x1);
-        float h2 = dist;
-        float a2 = h1;
-
-        float thetaY = (float)((h1==0) ? 0:degrees((float)Math.Acos(a1 / h1)));
-        float thetaZ = (float)((h2==0) ? 0:degrees((float)Math.Acos(a2 / h2)));
-
-        // Reflect the places where the results don't line up
-        if (z1 < z0){ thetaY = 180 - thetaY;}
-        else {thetaY = 180 + thetaY;}
-        if (y1 < y0){ thetaZ = -thetaZ;}
-
-        pivot.transform.Rotate(new Vector3(0,thetaY,thetaZ));
-        cube.transform.SetParent(transform);
-        GameObject.Destroy(pivot);
-
-        return cube;
-    }
-
-    // draw a single sphere to represent a point.
-    GameObject drawPoint (float x, float y, float z) {
-        GameObject p = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        p.transform.SetParent(transform);
-        p.transform.localScale = new Vector3 (pScale, pScale, pScale);
-        p.transform.localPosition = new Vector3(x,y,z);
-        return p;
-    }
 
     void clear(){
         if (objs != null) {
             for (int i = 0; i < objs.Length; i ++){
-                GameObject.Destroy(objs[i]);
+                Destroy(objs[i]);
             }
         }
         objs = new GameObject[objMax];
@@ -219,7 +162,7 @@ public class Tesseract : MonoBehaviour {
     }
 
     void tesseract() {
-        int count = 0;
+        mesh.Clear();
         // Rotation per frame for the two rotations
         float t1 = (float) (2 * Math.PI * rpsX) * Time.deltaTime;
         float t2 = (float) (2 * Math.PI * rpsW) * Time.deltaTime;
@@ -227,30 +170,51 @@ public class Tesseract : MonoBehaviour {
 
         // Different projections offer vastly different final objects
         float[][] pPoints = project(points).contents; // projectedPoints
+        Vector3[] verts = convertToV3(pPoints);
+        mesh.vertices = verts;
+        mesh.triangles = faces;
 
-        // Draw the edges and points as cubes and spheres
-        for (int i = 0; i < pPoints[0].Length; i ++){
-            float x = pPoints[0][i];
-            float y = pPoints[1][i];
-            float z = pPoints[2][i];
-            objs[count] = drawPoint(x,y,z);
-            count += 1;
+        flatten(mesh);
+
+    }
+
+    Vector3[] convertToV3(float[][] ps){
+        Vector3[] result = new Vector3[ps[0].Length];
+        for (int i = 0; i < ps[0].Length; i++){
+            result[i] = new Vector3(ps[0][i], ps[1][i], ps[2][i]);
+        }
+        return result;
+    }
+
+
+    void drawText(string text, Vector3 location){
+        GameObject result = new GameObject();
+        result.transform.position = location;
+        result.AddComponent<TextMesh>();
+        TextMesh textMesh = result.GetComponent<TextMesh>();
+        textMesh.text = text;
+        textMesh.characterSize = 5f;
+        textMesh.anchor = TextAnchor.MiddleCenter;
+        textMesh.alignment = TextAlignment.Center;
+        result.transform.Rotate(new Vector3(0, 180, 0));
+    }
+
+    void flatten(Mesh m){
+        int[] tris = m.triangles;
+        Vector3[] verts = m.vertices;
+
+        int[] resultTris = new int[tris.Length];
+        Vector3[] resultVerts = new Vector3[tris.Length];
+
+        for (int i = 0; i < tris.Length; i ++){
+            int t = tris[i];
+            Vector3 p = verts[t];
+            resultVerts[i] = p;
+            resultTris[i] = i;
         }
 
-        for (int i = 0; i < edges.Length; i ++){
-            int p0 = edges[i][0];
-            int p1 = edges[i][1];
-
-            float x0 = pPoints[0][p0];
-            float y0 = pPoints[1][p0];
-            float z0 = pPoints[2][p0];
-
-            float x1 = pPoints[0][p1];
-            float y1 = pPoints[1][p1];
-            float z1 = pPoints[2][p1];
-
-            objs[count] = drawEdge(x0,y0,z0, x1,y1,z1);
-            count += 1;
-        }
+        m.vertices = resultVerts;
+        m.triangles = resultTris;
+        mesh.RecalculateNormals();
     }
 }
