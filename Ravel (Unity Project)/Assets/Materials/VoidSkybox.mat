@@ -4,7 +4,7 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: VoidSkybox
   m_Shader: {fileID: 104, guid: 0000000000000000f000000000000000, type: 0}
@@ -100,4 +100,4 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Tint: {r: 0.28120717, g: 0.09011215, b: 0.4245283, a: 0.5}
+    - _Tint: {r: 0.17276607, g: 0.11258454, b: 0.21698111, a: 0.5}

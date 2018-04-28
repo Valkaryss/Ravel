@@ -4,53 +4,98 @@ using UnityEngine;
 
 public class Runner : MonoBehaviour
 {
+    // General controller stuff
     [Tooltip("Player controller script, please!")]
     public OVRPlayerController pc; // PC culture gone too far
+
+    [Tooltip("Place in which object appear in front of the player's face")]
+    public GameObject objectLocation;
+
     [Tooltip("GameObject where the user will float to on house click")]
     public GameObject startTargetPosition; // Empty GameObject stair target
+
     [Tooltip("Please tell me where the collider for b2 is, I need to disable it.")]
     public GameObject bedroomCollider2;
     Vector3 bedroom2Location;
 
-    public GameObject letterLocation;
-    Vector3 letterLoc;
+    [Tooltip("I'm manually overriding the gravity of the OVRPlayerController. This needs to be a relatively large value, because we are at a bananas scale.")]
+    public float gravityMultiplier;
 
+    [Tooltip("Where do I snap to on the roof?")]
     public GameObject roofTarget;
     Vector3 roofLocation;
 
+    [Tooltip("Where do I snap to in the bedroom? Remove once ladder is implemented")]
     public GameObject bedroomTarget;
     Vector3 bedroomLocation;
 
+    // Audio stuff
+    [Tooltip("Main source of background music")]
+    public AudioSource mainMusic;
+    [Tooltip("Heartbeat pulsation")]
+    public AudioSource heartbeatMusic;
+    [Tooltip("Voiceover from Greer's room")]
+    public AudioSource greersRoomAudio;
+    [Tooltip("Voiceover from the bathroom")]
+    public AudioSource bathroomAudio;
+    [Tooltip("Voiceover from the basement")]
+    public AudioSource basementAudio;
+    
 
+    // Objects in the house
+    [Tooltip("The letter we find at the beginning")]
+    public GameObject letter;
+    private Vector3 letterPosition;
+
+    [Tooltip("The ladder object, so I can vanish/reappear it.")]
+    public GameObject ladder;
+    private Vector3 ladderSize;
+
+    [Tooltip("Tesseract hallway object")]
+    public GameObject hallway;
+
+    // Stuff for the intro to the loop
+    [Tooltip("The speed at which we fly from space to the stairs")]
+    public float lerpSpeed = 1;
+    [Tooltip("Speed at which the letter flies to your face")]
+    public float letterSpeed = 50;
+    [Tooltip("Speed at which letter rotates to 45 degree position")]
+    public float letterRotateSpeed = 1f;
+    [Tooltip("Sensitivity of \"close enough\" to the stairs")]
+    public float epsilon = 20f;
+
+
+    public Animator testAnimation;
+    // State handling
     enum State { start, searching };
     State state;
     Vector3 stairPosition; // Stair location
     Vector3 restartPosition; // Reset position in spaaaaace
     bool traveling = false;
-
     Hashtable locationTracker;
 
-
-    public AudioSource greersRoomAudio;
-    public AudioSource bathroomAudio;
-    public AudioSource basementAudio;
-
+    // Doors
+    [Tooltip("Eventually, this will accept each door in the house individually")]
     public GameObject testDoor;
     private Hashtable doorPivots;
 
-    // Use this for initialization
+    // Initialization
     void Start()
     {
         restartPosition = transform.position;
         stairPosition = startTargetPosition.transform.position;
-        letterLoc = letterLocation.transform.position;
         roofLocation = roofTarget.transform.position;
         bedroomLocation = bedroomTarget.transform.position;
+        bedroom2Location = bedroomCollider2.transform.position;
+        ladderSize = ladder.transform.localScale;
+        letterPosition = letter.transform.position;
         locationTracker = new Hashtable();
         doorPivots = new Hashtable();
-        restart();   
+        restart();
     }
 
+    // Calculate the pivot point of a specific door. This is based on the bounding box, so this requires
+    // that every door have an identical starting rotation.
     Vector3 calculatePivotPoint(GameObject door)
     {
         Bounds b = door.GetComponent<MeshFilter>().mesh.bounds;
@@ -59,20 +104,16 @@ public class Runner : MonoBehaviour
         float sY = scale.y;
         float sZ = scale.z;
         Vector3 extents = new Vector3(b.extents.x * sX, b.extents.y * sY, b.extents.z * sZ);
-        print(extents - vectorwiseMultiply(extents, door.transform.right));
         return door.transform.position + b.center - (extents - vectorwiseMultiply(extents, door.transform.right));
     }
 
-    Vector3 vectorwiseMultiply(Vector3 a, Vector3 b)
-    {
-        return new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
-    }
-
+    // Rotate the door
     void rotateDoor(GameObject door, float angle)
     {
         StartCoroutine(rotateOverTime(door, angle, 1f));
     }
 
+    // Open/close a door over an amount of time
     IEnumerator rotateOverTime(GameObject door, float angle, float time)
     {
         float elapsed = 0;
@@ -82,31 +123,61 @@ public class Runner : MonoBehaviour
 
         while (elapsed < time)
         {
-            door.transform.RotateAround(pivotPoint, Vector3.up, angle * (Time.deltaTime/time));
+            door.transform.RotateAround(pivotPoint, Vector3.up, angle * (Time.deltaTime / time));
             elapsed += Time.deltaTime;
             yield return null;
         }
 
     }
 
+    // Start the sim over again. Put things here that need to be reset on every iteration of the loop
     void restart()
     {
         state = State.start;
+        traveling = false;
         pc.GravityModifier = 0;
         locationTracker["Bedroom"] = false;
         locationTracker["Kitchen"] = false;
         locationTracker["Basement"] = false;
         locationTracker["Bathroom"] = false;
         disableBedroom2();
+        removeHallway();
+        hideLadder();
+        letter.transform.position = letterPosition;
     }
 
     // Move the bedroom so far away no one will ever find it
     void disableBedroom2()
     {
-        bedroom2Location = bedroomCollider2.transform.position;
+
         bedroomCollider2.transform.position = new Vector3(0, 0, 0);
     }
 
+
+    // Make the tesseract script stop running
+    void removeHallway()
+    {
+        Tesseract tess = hallway.GetComponent<Tesseract>();
+        tess.drawing = false;
+    }
+
+    // Hide the ladder
+    void hideLadder()
+    {
+        ladder.transform.localScale = new Vector3(0, 0, 0);
+    }
+    // Reveal the ladder
+    void revealLadder()
+    {
+        ladder.transform.localScale = ladderSize;
+    }
+
+    // Re-enable the tesseract script
+    void enableHallway()
+    {
+        Tesseract tess = hallway.GetComponent<Tesseract>();
+        tess.drawing = true;
+    }
     // Move the bedroom2 collider back to a useful place
     void enableBedroom2()
     {
@@ -140,8 +211,7 @@ public class Runner : MonoBehaviour
     // ---------------------------------------------------------------------------------------
     // ------------------------------------- Start State -------------------------------------
     // ---------------------------------------------------------------------------------------
-    [Tooltip("The speed at which we fly from space to the stairs")]
-    public float lerpSpeed = 1;
+    
 
     float dR = 90;
     // Update function in the "start" state
@@ -162,16 +232,88 @@ public class Runner : MonoBehaviour
         if (almostEquals(transform.position, stairPosition))
         {
             traveling = false;
-            pc.GravityModifier = 1;
+            pc.GravityModifier = gravityMultiplier;
             state = State.searching;
-            drawText(letterLoc, "You see a letter", 0, 5);
-            drawText(letterLoc, "You pick it up and open it", 5.1f, -1);
+            StartCoroutine(openLetter());
         }
 
+        startDebugKeys();
+    }
+
+
+    // Open the letter over time 
+    IEnumerator openLetter()
+    {
+        float elapsed = 0;
+        float distCovered = 0;
+        float journeyLength = Vector3.Distance(letter.transform.position, objectLocation.transform.position);
+        Transform parent = objectLocation.transform;
+        Animation anim = letter.GetComponent<Animation>();
+
+        // Float the letter to my face
+        while (distCovered < journeyLength)
+        {
+            elapsed += Time.deltaTime;
+            distCovered = (elapsed) * letterSpeed;
+            float fracJourney = distCovered / journeyLength;
+            letter.transform.position = Vector3.Lerp(letterPosition, objectLocation.transform.position, fracJourney);
+            if (letter.transform.eulerAngles.x < 45)
+            {
+                letter.transform.Rotate(new Vector3(letterRotateSpeed * Time.deltaTime, 0, 0));
+            }
+            yield return null;
+        }
+
+        anim.Play();
+
+        // Hold it in front of your face until you tell it to go away. Right now that's the enter key,
+        // but that'll change.
+        while (!Input.GetKeyDown(KeyCode.Return))
+        {
+            letter.transform.position = parent.position;
+            letter.transform.LookAt(parent.parent.transform);
+            yield return null;
+        }
+
+        letter.transform.position = Vector3.zero;
+        letter.transform.eulerAngles = new Vector3(0, -90, 0);
+
+        // Rewind is a pain in the ass. Look at this hack.
+        anim.Play();
+        yield return null;
+        anim.Stop();
+    }
+
+    // Keypressed for debugging certain aspects of the starting state
+    void startDebugKeys()
+    {
+        // Rotate a door back and forth
         if (Input.GetKeyDown(KeyCode.D))
         {
             rotateDoor(testDoor, dR);
             dR = -dR;
+        }
+        // Add/remove the tesseract
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            Tesseract tess = hallway.GetComponent<Tesseract>();
+            if (tess.drawing) { removeHallway(); }
+            else { enableHallway(); }
+        }
+
+        // Ladder existance
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            hideLadder();
+        }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            revealLadder();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            testAnimation.SetTrigger("Continue");
         }
     }
 
@@ -186,6 +328,7 @@ public class Runner : MonoBehaviour
         checkEnableBedroom2();
     }
 
+    
     // Check to see if the player is resetting to starting position, and do it if they are.
     void checkReset()
     {
@@ -203,6 +346,21 @@ public class Runner : MonoBehaviour
         if (almostEquals(transform.position, restartPosition))
         {
             restart();
+        }
+
+        searchingDebugKeys();
+    }
+
+    // Will eventually be deleted, keys for debugging certain aspects of the searching state
+    void searchingDebugKeys()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            StartCoroutine(lockPosition(() => unlockPlayerPosition, unlockPlayerPositionPredicate));
+        }
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            unlockPlayerPosition = true;
         }
     }
 
@@ -228,6 +386,7 @@ public class Runner : MonoBehaviour
     //    drawText(p, "Your Other Text Here", delay, life);
     //    . . . 
     //    break;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.transform.parent.name != "Trigger Elements") { return; }
@@ -278,13 +437,16 @@ public class Runner : MonoBehaviour
         other.gameObject.transform.position = new Vector3(0, 0, 0);
     }
 
+    // Teleport you from the roof to the bedroom (Will eventually be replaced with walking down the ladder)
     IEnumerator bedroomTeleport()
     {
         yield return new WaitForSeconds(5f);
         transform.position = bedroomLocation;
     }
+    // Teleport you from the bedroom to the roof (Will eventually be replaced by walking up the wall)
     IEnumerator roofTeleport()
     {
+        revealLadder();
         yield return new WaitForSeconds(10f);
         transform.position = roofLocation;
     }
@@ -296,7 +458,61 @@ public class Runner : MonoBehaviour
         locationTracker[roomName] = true;
     }
 
-    // Create a thing that says a thing in a place
+    // ********************************************* Lock Position *********************************************
+    // lockPosition can take either one or two arguments. In the first version, it takes a single Proposition p
+    // and will hold the player in place until p is true. In the second version, a Predicate of q is provided,
+    // which will run after the player is unlocked. This is for reseting varyables of some sort.
+    private delegate bool Proposition();
+    private delegate void Predicate();
+    private void emptyQ() { }
+    private bool unlockPlayerPosition = false;
+    private void unlockPlayerPositionPredicate() { unlockPlayerPosition = false; }
+
+    IEnumerator lockPosition(Proposition p)
+    {
+        yield return lockPosition(p, emptyQ);
+    }
+
+    IEnumerator lockPosition(Proposition p, Predicate q)
+    {
+        Vector3 lockedPosition = transform.position;
+        while (!p())
+        {
+            transform.position = lockedPosition;
+            yield return null;
+        }
+        q();
+    }
+
+    // ---------------------------------------------------------------------------------------
+    // ---------------------------------- UTILITY FUNCTIONS ----------------------------------
+    // ---------------------------------------------------------------------------------------
+
+    // Returns true iff vector p is close enough to vector q for us to not care, as defined by epsilon
+    bool almostEquals(Vector3 p, Vector3 q)
+    {
+        Vector3 e = new Vector3(epsilon, epsilon, epsilon);
+        return lessThan(v3Abs(p - q), e);
+    }
+
+    // Takes the component-wise absolute value of a vector
+    Vector3 v3Abs(Vector3 v)
+    {
+        return new Vector3(Mathf.Abs(v.x), Mathf.Abs(v.y), Mathf.Abs(v.z));
+    }
+    // Returns true iff every value of p is less than every value of q
+    bool lessThan(Vector3 p, Vector3 q)
+    {
+        return p.x < q.x && p.y < q.y && p.z < q.z;
+    }
+
+    Vector3 vectorwiseMultiply(Vector3 a, Vector3 b)
+    {
+        return new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
+    }
+
+
+    // Create a thing that says a thing in a place over time
     void drawText(Vector3 p, string t, float delay, float life)
     {
         StartCoroutine(delayedDrawText(p, t, delay, life));
@@ -326,27 +542,4 @@ public class Runner : MonoBehaviour
         Destroy(result);
     }
 
-    // ---------------------------------------------------------------------------------------
-    // ---------------------------------- UTILITY FUNCTIONS ----------------------------------
-    // ---------------------------------------------------------------------------------------
-
-    [Tooltip("Sensitivity of \"close enough\" to the stairs")]
-    public float e = 20f;
-    // Returns true iff vector p is close enough to vector q for us to not care, as defined by epsilon
-    bool almostEquals(Vector3 p, Vector3 q)
-    {
-        Vector3 epsilon = new Vector3(e, e, e);
-        return lessThan(v3Abs(p - q), epsilon);
-    }
-
-    // Takes the component-wise absolute value of a vector
-    Vector3 v3Abs(Vector3 v)
-    {
-        return new Vector3(Mathf.Abs(v.x), Mathf.Abs(v.y), Mathf.Abs(v.z));
-    }
-    // Returns true iff every value of p is less than every value of q
-    bool lessThan(Vector3 p, Vector3 q)
-    {
-        return p.x < q.x && p.y < q.y && p.z < q.z;
-    }
 }

@@ -94,7 +94,6 @@ public class OVRPlayerController : MonoBehaviour
 	/// The CameraHeight is the actual height of the HMD and can be used to adjust the height of the character controller, which will affect the
 	/// ability of the character to move into areas with a low ceiling.
 	/// </summary>
-	[NonSerialized]
 	public float CameraHeight;
 
 	/// <summary>

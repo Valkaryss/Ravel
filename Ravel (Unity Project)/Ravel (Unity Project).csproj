@@ -576,6 +576,7 @@
     <Compile Include="Assets\PostProcessing\Utilities\CustomMotionTexture\ExampleWheelController.cs" />
     <Compile Include="Assets\Scripts\Blinky.cs" />
     <Compile Include="Assets\Scripts\DisplayRotation.cs" />
+    <Compile Include="Assets\Scripts\HeartbeatRunner.cs" />
     <Compile Include="Assets\Scripts\Monitor.cs" />
     <Compile Include="Assets\Scripts\Runner.cs" />
     <Compile Include="Assets\Scripts\RyanNonLinear.cs" />
