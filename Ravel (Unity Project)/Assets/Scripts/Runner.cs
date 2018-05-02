@@ -8,6 +8,9 @@ public class Runner : MonoBehaviour
     [Tooltip("Player controller script, please!")]
     public OVRPlayerController pc; // PC culture gone too far
 
+    public GameObject trackingSpace;
+    public float trackingSpaceHeight;
+
     [Tooltip("Place in which object appear in front of the player's face")]
     public GameObject objectLocation;
 
@@ -79,6 +82,12 @@ public class Runner : MonoBehaviour
     public GameObject testDoor;
     private Hashtable doorPivots;
 
+    public bool drawText1 = false;
+    public bool drawText2 = false;
+    public bool drawText3 = false;
+    public bool drawText4 = false;
+    public bool drawText5 = false;
+
     // Initialization
     void Start()
     {
@@ -91,6 +100,7 @@ public class Runner : MonoBehaviour
         letterPosition = letter.transform.position;
         locationTracker = new Hashtable();
         doorPivots = new Hashtable();
+        trackingSpace.transform.Translate(new Vector3(0, trackingSpaceHeight, 0), Space.Self);
         restart();
     }
 
@@ -144,6 +154,11 @@ public class Runner : MonoBehaviour
         removeHallway();
         hideLadder();
         letter.transform.position = letterPosition;
+        drawText1 = false;
+        drawText2 = false;
+        drawText3 = false;
+        drawText4 = false;
+        drawText5 = false;
     }
 
     // Move the bedroom so far away no one will ever find it
@@ -272,6 +287,7 @@ public class Runner : MonoBehaviour
         {
             letter.transform.position = parent.position;
             letter.transform.LookAt(parent.parent.transform);
+            letter.transform.Rotate(new Vector3(65, 0, 0));
             yield return null;
         }
 
@@ -314,6 +330,10 @@ public class Runner : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Z))
         {
             testAnimation.SetTrigger("Continue");
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad1)){
+            print("Drawtext1");
+            drawText1 = true;
         }
     }
 
@@ -389,7 +409,7 @@ public class Runner : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.transform.parent.name != "Trigger Elements") { return; }
+        if (other.transform.parent == null || other.transform.parent.name != "Trigger Elements") { return; }
         Vector3 p = other.transform.position;
         switch (other.name)
         {
