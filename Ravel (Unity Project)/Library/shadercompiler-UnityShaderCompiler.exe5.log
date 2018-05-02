@@ -1,19 +1,7 @@
 Base path: D:/2018.2.0b2/Editor/Data
 Cmd: initializeCompiler
 Cmd: compileComputeKernel
-  api=4 insize=5188 outsize=5385 ok=1
+  api=4 insize=3273 outsize=585 ok=1
 Cmd: compileComputeKernel
-  api=4 insize=9421 outsize=8741 ok=1
-Cmd: compileComputeKernel
-  api=4 insize=2953 outsize=349 ok=1
-Cmd: initializeCompiler
-Cmd: initializeCompiler
-Cmd: initializeCompiler
-Cmd: initializeCompiler
-Cmd: initializeCompiler
-Cmd: initializeCompiler
-Cmd: initializeCompiler
-Cmd: initializeCompiler
-Cmd: initializeCompiler
-Cmd: initializeCompiler
+  api=4 insize=1864 outsize=1377 ok=1
 Cmd: initializeCompiler

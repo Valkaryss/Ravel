@@ -1,4 +1,0 @@
-sceneSetups:
-- path: Assets/Scenes/Walkthrough.unity
-  isLoaded: 1
-  isActive: 1
